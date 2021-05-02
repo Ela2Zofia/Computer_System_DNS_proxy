@@ -3,7 +3,7 @@
 # OBJ - compiled source files that should be linked
 # COPT - compiler flags
 # BIN - binary
-CC=clang
+CC=gcc
 OBJ=helper1.o
 COPT=-Wall -Wpedantic -g
 BIN_PHASE1=phase1
@@ -32,4 +32,4 @@ format:
 	clang-format -i *.c *.h
 
 clean:
-	# implement this, to remove $(BIN_PHASE[12]) and any .o files
+	rm -f *.o $(BIN_PHASE1) $(BIN_PHASE2)

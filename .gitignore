@@ -1,5 +1,10 @@
 # Add more...
+# Ignore all
+*
+# Unignore all with extensions
+!*.*
 *.gch
 phase1
 phase1.exe
 vgcore.*
+*.o
