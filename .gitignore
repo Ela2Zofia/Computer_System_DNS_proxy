@@ -3,6 +3,7 @@
 *
 # Unignore all with extensions
 !*.*
+*/
 *.gch
 phase1
 phase1.exe
