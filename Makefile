@@ -32,4 +32,4 @@ format:
 	clang-format -i *.c *.h
 
 clean:
-	rm -f *.o $(BIN_PHASE1) $(BIN_PHASE2)
+	rm -f *.o *.log $(BIN_PHASE1) $(BIN_PHASE2)

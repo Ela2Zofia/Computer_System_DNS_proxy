@@ -21,7 +21,8 @@ typedef struct header_t{
 
 int main(int argc, char* argv[]) {
     // char* message_type = argv[1];
-    int qr;
+    unsigned int qr;
+    unsigned int rcode;
     unsigned char len_buffer[2];
     FILE* log_f = fopen(LOG_FILE,"a");
 
@@ -38,12 +39,14 @@ int main(int argc, char* argv[]) {
     // read the first two byte of tcp packet, which represents the length of the packet
     read(0, len_buffer, 2);
     unsigned int size = len_buffer[0] << 8 | len_buffer[1];
+    printf("size: %d\n", size);
 
     // read the head of DNS packet
     unsigned char header[HEADER_SIZE];
     read(0, header, 12);
     qr = header[2] >> 7;
-
+    rcode = header[3] & 15;
+    if(rcode != 0) return 0;
     // read the rest of the packet/body
     unsigned char body[size-HEADER_SIZE];
     read(0, body, size-HEADER_SIZE);
@@ -106,8 +109,7 @@ int main(int argc, char* argv[]) {
         
         // index position increase to answer section
         index+=5;
-        // unsigned int name_pointer = (body[index] << 8 | body[index+1]) - 49152;
-        
+        // unsigned int name_pointer = (body[index] << 8 | body[index+1]);
         // index position to TYPE field
         index+=2;
         unsigned int type = body[index] << 8 | body[index+1];
@@ -131,7 +133,7 @@ int main(int argc, char* argv[]) {
         char ip_text[INET6_ADDRSTRLEN];
         memcpy(ip, &body[index], ip_len);
         inet_ntop(AF_INET6, ip, ip_text, INET6_ADDRSTRLEN);
-        // printf("%s\n", ip_text);
+        printf("%s\n", ip_text);
 
         if(type == 28){
             fprintf(log_f, "%s %s is at %s\n", time_stamp, url, ip_text);
@@ -140,7 +142,8 @@ int main(int argc, char* argv[]) {
 
     }
 
-    // printf("%s\n", url);
+    printf("%s\n", url);
     
     fclose(log_f);
+    return 0;
 }

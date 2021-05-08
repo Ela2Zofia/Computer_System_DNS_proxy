@@ -9,3 +9,4 @@ phase1
 phase1.exe
 vgcore.*
 *.o
+.log
