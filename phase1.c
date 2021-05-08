@@ -38,13 +38,11 @@ int main(int argc, char* argv[]) {
     // read the first two byte of tcp packet, which represents the length of the packet
     read(0, len_buffer, 2);
     unsigned int size = len_buffer[0] << 8 | len_buffer[1];
-    printf("%d\n", size);
 
     // read the head of DNS packet
     unsigned char header[HEADER_SIZE];
     read(0, header, 12);
     qr = header[2] >> 7;
-    printf("%d\n", qr);
 
     // read the rest of the packet/body
     unsigned char body[size-HEADER_SIZE];
@@ -93,13 +91,12 @@ int main(int argc, char* argv[]) {
     if(!qr){
         // index position increase to QTYPE
         index++;
-        unsigned int qtype = body[index] << 8 | body[index+1];
+        int qtype = body[index] << 8 | body[index+1];
+        fprintf(log_f, "%s requested %s\n", time_stamp, url);
+        fflush(log_f);
         if(qtype!=28){
             fprintf(log_f, "%s unimplemented request\n",time_stamp);
-            fflush(log_f);
-        }else{
-            fprintf(log_f, "%s requested %s\n", time_stamp, url);
-            fflush(log_f);
+            fflush(log_f);   
         }
         // jump to the end of QCLASS
         index+=2;
@@ -109,7 +106,7 @@ int main(int argc, char* argv[]) {
         
         // index position increase to answer section
         index+=5;
-        unsigned int name_pointer = (body[index] << 8 | body[index+1]) - 49152;
+        // unsigned int name_pointer = (body[index] << 8 | body[index+1]) - 49152;
         
         // index position to TYPE field
         index+=2;
@@ -121,10 +118,10 @@ int main(int argc, char* argv[]) {
         
         // index position to RDLENGTH field
         index+=2;
-        unsigned int ttl = body[index] << 24 
-            | body[index+1] << 16 
-            | body[index+2] << 8 
-            | body[index+3];
+        // unsigned int ttl = body[index] << 24 
+        //     | body[index+1] << 16 
+        //     | body[index+2] << 8 
+        //     | body[index+3];
 
         // inde position to RDATA field
         index+=4;
@@ -134,7 +131,7 @@ int main(int argc, char* argv[]) {
         char ip_text[INET6_ADDRSTRLEN];
         memcpy(ip, &body[index], ip_len);
         inet_ntop(AF_INET6, ip, ip_text, INET6_ADDRSTRLEN);
-        printf("%s\n", ip_text);
+        // printf("%s\n", ip_text);
 
         if(type == 28){
             fprintf(log_f, "%s %s is at %s\n", time_stamp, url, ip_text);
@@ -143,7 +140,7 @@ int main(int argc, char* argv[]) {
 
     }
 
-    printf("%s\n", url);
+    // printf("%s\n", url);
     
     fclose(log_f);
 }
