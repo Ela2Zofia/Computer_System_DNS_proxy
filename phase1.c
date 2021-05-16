@@ -18,6 +18,13 @@ typedef struct header_t{
     unsigned char rcode;
 }header;
 
+typedef struct dns_packet_t{
+    unsigned char header[12];
+    unsigned char* body;
+}dns_packet;
+
+
+dns_packet* read_packet(int fd, int size);
 
 int main(int argc, char* argv[]) {
     // char* message_type = argv[1];
@@ -51,16 +58,6 @@ int main(int argc, char* argv[]) {
     unsigned char body[size-HEADER_SIZE];
     read(0, body, size-HEADER_SIZE);
 
-    // for(int i = 0; i < HEADER_SIZE;i++){
-    //     printf("%02x", header[i]);
-        
-    // }
-    // printf("\n");
-    // for(int i = 0; i < size - HEADER_SIZE;i++){
-    //     printf("%02x", body[i]);
-    // }
-    // printf("\n");
-    
 
     // get the length of the requested URL
     int index = 0;
