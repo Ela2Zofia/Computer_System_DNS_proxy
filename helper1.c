@@ -158,19 +158,12 @@ int process_packet(dns_packet** packet) {
             //     index += ip_len; // RDATA
             // }
 
-            (*packet)->size = answer_start_index + HEADER_SIZE;
-            unsigned char* new_body = malloc(((*packet)->size-HEADER_SIZE) * sizeof(unsigned char));
+            // (*packet)->size = answer_start_index + HEADER_SIZE;
+            // unsigned char* new_body = malloc(((*packet)->size-HEADER_SIZE) * sizeof(unsigned char));
             
-            // if (nscount+arcount != 0){
-            //     memcpy(new_body, body, answer_start_index);
-            //     memcpy(&new_body[answer_start_index], &body[answer_end_index], (*packet)->size-HEADER_SIZE-answer_end_index);
-            // }else{
-                
-            // }
-            
-            memcpy(new_body, body, (*packet)->size-HEADER_SIZE);
-            free(body);
-            (*packet)->body = new_body;
+            // memcpy(new_body, body, (*packet)->size-HEADER_SIZE);
+            // free(body);
+            // (*packet)->body = new_body;
 
             fclose(log_f);
             return INVALID;
