@@ -140,13 +140,13 @@ int process_packet(dns_packet** packet) {
             header[3] = header[3] | 4;
             
             // set anwser number to 0
-            header[6] = header[6] & 0;
-            header[7] = header[7] & 0;
+            // header[6] = header[6] & 0;
+            // header[7] = header[7] & 0;
             // set nscount and arcount to 0
-            header[8] = header[8] & 0;
-            header[9] = header[9] & 0;
-            header[10] = header[10] & 0;
-            header[11] = header[11] & 0;
+            // header[8] = header[8] & 0;
+            // header[9] = header[9] & 0;
+            // header[10] = header[10] & 0;
+            // header[11] = header[11] & 0;
 
             // for(int i = 0; i < n_answer; i++){
             //     index += 2; // NAME

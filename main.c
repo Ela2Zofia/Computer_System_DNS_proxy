@@ -86,8 +86,7 @@ int main(int argc, char* argv[]) {
             
             close(clientfd);
             
-            free(request_packet->body);
-            free(request_packet);
+            
         }else{
             upstreamfd = create_upstream_socket(argv[1], argv[2]);
             
@@ -139,11 +138,10 @@ int main(int argc, char* argv[]) {
 
             close(clientfd);
             close(upstreamfd);
-            free(request_packet->body);
-            free(request_packet);
 
         }
-
+        free(request_packet->body);
+        free(request_packet);
 
         
     }
