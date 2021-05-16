@@ -54,7 +54,6 @@ int process_packet(dns_packet** packet) {
         return INVALID;
     }
 
-
     // get the length of the requested URL
     int index = 0;
     int dots = 0;
@@ -112,8 +111,6 @@ int process_packet(dns_packet** packet) {
             return VALID;
         }
         
-
-
         // jump to the begining of QCLASS
         index+=2;
         // unsigned int qclass = ((body[index] << 8) | body[index+1]);
@@ -189,7 +186,7 @@ int process_packet(dns_packet** packet) {
             memcpy(ip, &body[index], ip_len);
             inet_ntop(AF_INET6, ip, ip_text, INET6_ADDRSTRLEN);
             
-            printf("%s\n", ip_text);
+            // printf("%s\n", ip_text);
             
             fprintf(log_f, "%s %s is at %s\n", time_stamp, url, ip_text);
             fflush(log_f);
@@ -198,14 +195,14 @@ int process_packet(dns_packet** packet) {
 
     }
 
-    printf("%s\n", url);
+    // printf("%s\n", url);
     fclose(log_f);
     return VALID;
 }
 
 
 int create_upstream_socket(char* addr, char* port){
-    printf("Start to contact upstream\n");
+    // printf("Start to contact upstream\n");
     
     int sockfd;
     struct addrinfo hints, *servinfo, *rp;

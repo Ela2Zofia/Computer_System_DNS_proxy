@@ -60,17 +60,10 @@ int main(int argc, char* argv[]) {
         unsigned int packet_size = len_buffer[0] << 8 | len_buffer[1];
 
         dns_packet* request_packet = read_packet(clientfd, packet_size);
-        
-        // for(int i = 0; i<12;i++){
-        //     printf("%02x", request_packet->header[i]);
-        // }
-        // for(int i = 0; i<packet_size-12;i++){
-        //     printf("%02x", request_packet->body[i]);
-        // }
-        // printf("\n");
 
         int valid = process_packet(&request_packet);
 
+        // cases of whether the request from client is a valid AAAA request
         if (!valid){
             unsigned char response[packet_size+2];
             memcpy(response, len_buffer,2);
@@ -95,41 +88,33 @@ int main(int argc, char* argv[]) {
             memcpy(&request[2], request_packet->header, HEADER_SIZE);
             memcpy(&request[2+HEADER_SIZE], request_packet->body, packet_size-HEADER_SIZE);
 
+            // forward the request to upstream server
             n = write(upstreamfd, request, packet_size+2);
+
             if (n < 0) {
 		        perror("socket");
 		        exit(EXIT_FAILURE);
 	        }
 
             memset(len_buffer, 0, 2);
+
+            // read upstream's response
             read(upstreamfd, len_buffer, 2);
             unsigned int packet_size = len_buffer[0] << 8 | len_buffer[1];
 
             request_packet = read_packet(upstreamfd, packet_size);
-            
-            for(int i = 0; i<12;i++){
-                printf("%02x", request_packet->header[i]);
-            }
-            for(int i = 0; i<request_packet->size-12;i++){
-                printf("%02x", request_packet->body[i]);
-            }
-            printf("\n");
 
             process_packet(&request_packet);
             
+
             unsigned char response[request_packet->size+2];
-            response[0] = request_packet->size & 65280;
-            response[1] = request_packet->size & 255;
+            response[0] = request_packet->size & 65280; // 1111111100000000
+            response[1] = request_packet->size & 255; // 0000000011111111
             memcpy(&response[2], request_packet->header, HEADER_SIZE);
             memcpy(&response[2+HEADER_SIZE], request_packet->body, request_packet->size-HEADER_SIZE);
 
+            // give client the response after processing
             n=write(clientfd, response, request_packet->size+2);
-
-            for(int i = 0; i < request_packet->size+2;i++){
-                printf("%02x", response[i]);
-            }
-            printf("\n");
-
 
             if (n < 0) {
 		        perror("socket");
