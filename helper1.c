@@ -36,7 +36,7 @@ int process_packet(dns_packet** packet) {
     unsigned char* header = (*packet)->header;
     unsigned char* body = (*packet)->body;
     
-    unsigned int qr, rcode, n_answer, nscount, arcount;
+    unsigned int qr, rcode;
     // current timestamp
     struct tm * timeinfo;
     char time_stamp[25];
@@ -48,9 +48,6 @@ int process_packet(dns_packet** packet) {
 
     qr = header[2] >> 7;
     rcode = header[3] & 15;
-    n_answer = header[6] << 8 | header[7];
-    // nscount = header[8] << 8 | header[9];
-    // arcount = header[10] << 8 | header[11];
     if(rcode != 0) {
         // change rcode to 4
         header[3] = header[3] | 4;
@@ -129,7 +126,7 @@ int process_packet(dns_packet** packet) {
         // index position increase to answer section
         index+=5;
         int answer_start_index = index;
-        int answer_end_index = answer_start_index;
+
         // unsigned int name_pointer = (body[index] << 8 | body[index+1]);
         
         // index position to TYPE field
@@ -151,18 +148,16 @@ int process_packet(dns_packet** packet) {
             header[10] = header[10] & 0;
             header[11] = header[11] & 0;
 
-            for(int i = 0; i < n_answer; i++){
-                index += 2; // NAME
-                index += 2; // TYPE
-                index += 2; // CLASS
-                index += 4; // TTL
-                unsigned int ip_len = body[index] << 8 | body[index+1];
-                index += 2; // RDLENGTH
-                index += ip_len; // RDATA
-            }
+            // for(int i = 0; i < n_answer; i++){
+            //     index += 2; // NAME
+            //     index += 2; // TYPE
+            //     index += 2; // CLASS
+            //     index += 4; // TTL
+            //     unsigned int ip_len = body[index] << 8 | body[index+1];
+            //     index += 2; // RDLENGTH
+            //     index += ip_len; // RDATA
+            // }
 
-            answer_end_index = index;
-            int answser_len = answer_end_index - answer_start_index;
             (*packet)->size = answer_start_index + HEADER_SIZE;
             unsigned char* new_body = malloc(((*packet)->size-HEADER_SIZE) * sizeof(unsigned char));
             
