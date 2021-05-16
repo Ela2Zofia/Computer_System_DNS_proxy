@@ -10,6 +10,7 @@
 #define LOG_FILE "dns_svr.log"
 
 typedef struct dns_packet_t{
+    unsigned int size;
     unsigned char header[HEADER_SIZE];
     unsigned char* body;
 }dns_packet;
